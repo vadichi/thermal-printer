@@ -24,8 +24,8 @@ printer_driver printer = {
         .clock_lead_time_us = 1,
         .latch_duration_us = 16,
         .latch_lag_time_us = 120,
-        .strobe_duration_us = 1180 * 2,
-        .bold_strobe_duration_us = 1180 * 4,
+        .strobe_duration_us = 1180 * 4,
+        .bold_strobe_duration_us = 1180 * 8,
 
         .line_width_dots = 288,
 
