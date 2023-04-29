@@ -1,0 +1,37 @@
+<div class="container">
+    <div class="title">
+        <h1>Arduino-Printer Control Panel</h1>
+    </div>
+
+    <div class="panel">
+        <div class="row">
+            <div class="section">
+                <h2 class="connection-title">Connection Status</h2>
+
+                <p class="connection-status">{{connection_status}}</p>
+                <button (click)="connect()" class="connection-connect-button">Connect</button>
+                <button (click)="disconnect()" class="connection-disconnect-button">Disconnect</button>
+
+            </div>
+
+            <div class="section">
+                <h2>Network Configuration</h2>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="section">
+                <h2 class="scroll-title">Scroll</h2>
+
+                <input #scroll_lines_input type="number" class="scroll-lines-input" placeholder="Lines">
+                <button (click)="scroll(scroll_lines_input.value)" class="scroll-button">Scroll</button>
+            </div>
+
+            <div class="section">
+                <h2>Print</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<router-outlet></router-outlet>
