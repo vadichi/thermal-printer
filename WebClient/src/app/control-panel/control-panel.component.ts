@@ -1,5 +1,7 @@
 import {Component} from '@angular/core';
 import {ConnectionStatus, WebSocketClientService} from "../web-socket-client.service";
+import {MatDialog} from "@angular/material/dialog";
+import {CustomDialogueComponent} from "../custom-dialogue/custom-dialogue.component";
 
 @Component({
     selector: 'app-control-panel',
@@ -8,72 +10,84 @@ import {ConnectionStatus, WebSocketClientService} from "../web-socket-client.ser
 })
 export class ControlPanelComponent {
 
-    connection: WebSocketClientService = new WebSocketClientService();
+    private connection: WebSocketClientService = new WebSocketClientService();
 
-    get connection_status(): string {
+    protected controls_enabled: boolean = true;
+
+    constructor(private dialogue: MatDialog) {}
+
+    protected get connection_status(): string {
         let status = this.connection?.connection_status;
 
         switch (status) {
             case ConnectionStatus.NOT_CONNECTED:
-                return "Not Connected";
+                return "not connected";
 
             case ConnectionStatus.CONNECTING:
-                return "Connecting";
+                return "connecting...";
 
             case ConnectionStatus.OPEN:
-                return "Connected";
+                return "connected";
 
             case ConnectionStatus.CLOSING:
-                return "Closing";
+                return "disconnecting...";
 
             case ConnectionStatus.CLOSED:
-                return "Closed";
+                return "disconnected";
         }
     }
 
-    async connect(): Promise<void> {
+    protected async connect(): Promise<void> {
+        this.controls_enabled = false;
+
         let success: boolean = false;
         try {
             success = await this.connection.connect("green-frost-printer.local:8080");
         } catch (exception) {
             if (exception instanceof SyntaxError) {
-                alert("Invalid IP address");
+                this.show_dialogue("Oops!", "Please enter a valid hostname.");
             }
         }
 
         if (!success) {
-            alert("Failed to connect");
+            this.show_dialogue("Oops!", "Failed to connect to printer.")
         }
+
+        this.controls_enabled = true;
     }
 
-    async disconnect(): Promise<void> {
+    protected async disconnect(): Promise<void> {
+        this.controls_enabled = false;
+
         let success: boolean = await this.connection.disconnect();
 
         if (!success) {
-            alert("Already disconnected");
+            this.show_dialogue("Oops!", "Already disconnected.");
         }
+
+        this.controls_enabled = true;
     }
 
-    async scroll(lines_input: string): Promise<void> {
+    protected async scroll(lines_input: string): Promise<void> {
         let lines: number = parseInt(lines_input);
 
         if (Number.isNaN(lines)) {
-            alert("Invalid number of lines");
+            this.show_dialogue("Oops!", "Please enter a valid number of lines to scroll.");
             return;
         }
 
         let result: boolean = await this.connection.send_scroll_command(lines);
 
         if (result) {
-            alert("Success");
+            this.show_dialogue("Success!", "Command sent successfully.");
         }
         else {
-            alert("Failed to send command");
+            this.show_dialogue("Oops!", "Failed to send command to printer.");
         }
     }
 
-    async print(): Promise<void> {
-
+    private show_dialogue(title: string, text: string): void {
+        this.dialogue.open(CustomDialogueComponent, {data: {title: title, text: text}});
     }
 
 }

@@ -1,37 +1,61 @@
 <div class="container">
     <div class="title">
-        <h1>Arduino-Printer Control Panel</h1>
+        <h1 class="container-title">Arduino-Printer Control Panel</h1>
     </div>
 
-    <div class="panel">
-        <div class="row">
+    <mat-grid-list cols="3" rowHeight="2:1">
+        <mat-grid-tile>
             <div class="section">
-                <h2 class="connection-title">Connection Status</h2>
+                <h2 class="section-title">Printer Connection</h2>
 
-                <p class="connection-status">{{connection_status}}</p>
-                <button (click)="connect()" class="connection-connect-button">Connect</button>
-                <button (click)="disconnect()" class="connection-disconnect-button">Disconnect</button>
+                <div>
+                    <p>Server: green-frost-printer.local:8080</p>
+                    <p class="connection-status">Status: {{connection_status}}</p>
+                </div>
 
+                <div>
+                    <button (click)="connect()" mat-stroked-button class="connection-connect-button"
+                            [disabled]="!controls_enabled">Connect</button>
+
+                    <button (click)="disconnect()" mat-stroked-button class="connection-disconnect-button"
+                            [disabled]="!controls_enabled">Disconnect</button>
+                </div>
             </div>
+        </mat-grid-tile>
 
+        <mat-grid-tile>
             <div class="section">
-                <h2>Network Configuration</h2>
+                <h2 class="section-title">Network Configuration</h2>
             </div>
-        </div>
+        </mat-grid-tile>
 
-        <div class="row">
+        <mat-grid-tile>
             <div class="section">
-                <h2 class="scroll-title">Scroll</h2>
-
-                <input #scroll_lines_input type="number" class="scroll-lines-input" placeholder="Lines">
-                <button (click)="scroll(scroll_lines_input.value)" class="scroll-button">Scroll</button>
+                <h2 class="section-title">Printer Settings</h2>
             </div>
+        </mat-grid-tile>
 
+        <mat-grid-tile>
             <div class="section">
-                <h2>Print</h2>
+                <h2 class="section-title">Scroll</h2>
+
+                <input #scroll_lines_input matInput type="number" class="scroll-lines-input" placeholder="Lines">
+                <button (click)="scroll(scroll_lines_input.value)" mat-stroked-button class="scroll-button">Scroll</button>
             </div>
-        </div>
-    </div>
+        </mat-grid-tile>
+
+        <mat-grid-tile>
+            <div class="section">
+                <h2 class="section-title">Print Text</h2>
+            </div>
+        </mat-grid-tile>
+
+        <mat-grid-tile>
+            <div class="section">
+                <h2 class="section-title">Print Image</h2>
+            </div>
+        </mat-grid-tile>
+    </mat-grid-list>
 </div>
 
 <router-outlet></router-outlet>

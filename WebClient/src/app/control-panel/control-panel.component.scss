@@ -1,0 +1,41 @@
+@use '@angular/material' as mat;
+
+.container-title {
+    text-align: center;
+}
+
+mat-grid-tile {
+    @include mat.elevation(2);
+}
+
+.section {
+    text-align: center;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.section-title {
+
+}
+
+//.panel {
+//    display: grid;
+//    grid-template-columns: repeat(3, 1fr);
+//    grid-template-rows: repeat(2, 1fr);
+//    gap: 1rem;
+//}
+//
+//.section {
+//    background-color: #f2f2f2;
+//    padding: 1rem;
+//    text-align: center;
+//}
+//
+//@media (max-width: 767px) {
+//    .panel {
+//        grid-template-columns: repeat(1, 1fr);
+//        grid-template-rows: repeat(6, 1fr);
+//    }
+//}
