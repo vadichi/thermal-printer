@@ -12,6 +12,10 @@ import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
 import {MatDialogModule} from "@angular/material/dialog";
 import {CustomDialogueComponent} from './custom-dialogue/custom-dialogue.component';
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import {MatToolbarModule} from "@angular/material/toolbar";
+import {MatIconModule} from "@angular/material/icon";
+import {MatMenuModule} from "@angular/material/menu";
 
 @NgModule({
     declarations: [
@@ -28,7 +32,11 @@ import {CustomDialogueComponent} from './custom-dialogue/custom-dialogue.compone
         MatGridListModule,
         MatInputModule,
         MatButtonModule,
-        MatDialogModule
+        MatDialogModule,
+        MatProgressSpinnerModule,
+        MatToolbarModule,
+        MatIconModule,
+        MatMenuModule
     ],
     providers: [],
     bootstrap: [AppComponent]

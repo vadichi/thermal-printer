@@ -1,14 +1,22 @@
 @use '@angular/material' as mat;
 
-.container-title {
-    text-align: center;
+.toolbar-spacer {
+    flex: 1 1 auto;
+}
+
+mat-grid-list {
+    height: calc(100vh - 64px);
 }
 
 mat-grid-tile {
     @include mat.elevation(2);
 }
 
-.section {
+mat-grid-tile-header {
+    @include mat.elevation(3);
+}
+
+.grid-tile-content {
     text-align: center;
 
     display: flex;
@@ -16,26 +24,17 @@ mat-grid-tile {
     justify-content: space-evenly;
 }
 
-.section-title {
-
+.grid-button {
+    @include mat.elevation(3);
 }
 
-//.panel {
-//    display: grid;
-//    grid-template-columns: repeat(3, 1fr);
-//    grid-template-rows: repeat(2, 1fr);
-//    gap: 1rem;
-//}
-//
-//.section {
-//    background-color: #f2f2f2;
-//    padding: 1rem;
-//    text-align: center;
-//}
-//
-//@media (max-width: 767px) {
-//    .panel {
-//        grid-template-columns: repeat(1, 1fr);
-//        grid-template-rows: repeat(6, 1fr);
-//    }
-//}
+.connection-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+mat-progress-spinner {
+    margin: 0 20px;
+}
