@@ -54,8 +54,11 @@ void web_socket_handle_message(uint8_t client_number, const uint8_t *message_buf
         Serial.write(message_buffer[i]);
     }
 
-    while(Serial.available() < 1);
+    uint8_t response = 0;
+    do {
+        while(Serial.available() < 1);
 
-    uint8_t response = (uint8_t) Serial.read();
-    server.sendBIN(client_number, &response, 1);
+        response = (uint8_t) Serial.read();
+        server.sendBIN(client_number, &response, 1);
+    } while (response != 'S');
 }
