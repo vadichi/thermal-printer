@@ -1,1 +1,30 @@
-/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+
+@import 'normalize.css';
+
+@include mat.core();
+
+html, body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+$WebClient-primary: mat.define-palette(mat.$deep-purple-palette, 500);
+$WebClient-accent: mat.define-palette(mat.$green-palette, A200, A100, A400);
+$WebClient-warn: mat.define-palette(mat.$red-palette);
+
+$WebClient-darkTheme: mat.define-dark-theme((
+    color: (
+        primary: $WebClient-primary,
+        accent: $WebClient-accent,
+        warn: $WebClient-warn,
+    ),
+
+    typography: mat.define-typography-config(),
+));
+
+@include mat.all-component-themes($WebClient-darkTheme);

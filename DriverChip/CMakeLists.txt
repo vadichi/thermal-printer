@@ -19,6 +19,8 @@ include(CMakeListsUser.txt)
 endif()
 
 include_directories(./lib/thermal_printer/)
+include_directories(.pio/libdeps/uno/LiquidCrystal_I2C/)
+include_directories(.pio/libdeps/uno/SimpleKeypad/)
 
 add_custom_target(
     Production ALL

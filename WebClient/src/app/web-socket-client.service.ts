@@ -3,20 +3,20 @@ import {Injectable} from '@angular/core';
 export enum ConnectionStatus {
     NOT_CONNECTED,
     CONNECTING,
-    OPEN,
-    CLOSING,
-    CLOSED,
+    CONNECTED,
+    DISCONNECTING,
+    DISCONNECTED,
 }
 
 @Injectable({
     providedIn: 'root'
 })
 export class WebSocketClientService {
-    socket: WebSocket | null = null;
+    private socket: WebSocket | null = null;
 
-    decoder: TextDecoder = new TextDecoder();
+    private decoder: TextDecoder = new TextDecoder();
 
-    get connection_status(): ConnectionStatus {
+    public get connection_status(): ConnectionStatus {
         if (this.socket == null) {
             return ConnectionStatus.NOT_CONNECTED;
         }
@@ -25,17 +25,17 @@ export class WebSocketClientService {
             case WebSocket.CONNECTING:
                 return ConnectionStatus.CONNECTING;
             case WebSocket.OPEN:
-                return ConnectionStatus.OPEN;
+                return ConnectionStatus.CONNECTED;
             case WebSocket.CLOSING:
-                return ConnectionStatus.CLOSING;
+                return ConnectionStatus.DISCONNECTING;
             case WebSocket.CLOSED:
-                return ConnectionStatus.CLOSED;
+                return ConnectionStatus.DISCONNECTED;
             default:
                 return ConnectionStatus.NOT_CONNECTED;
         }
     }
 
-    async connect(server_ip: string): Promise<boolean> {
+    public async connect(server_ip: string): Promise<boolean> {
         this.socket = new WebSocket("ws://" + server_ip);
         this.socket.binaryType = 'arraybuffer';
 
@@ -48,16 +48,30 @@ export class WebSocketClientService {
                 clearTimeout(timeout);
                 resolve();
             });
+
+            this.socket?.addEventListener("error", () => {
+                clearTimeout(timeout);
+                reject();
+            });
         });
 
         return await await_connection.then((): boolean => {
+           this.socket?.addEventListener("error", async () => {
+              await this.disconnect();
+           });
+
+           this.socket?.addEventListener("close", () => {
+              this.socket = null;
+           });
+
             return true;
         }).catch((): boolean => {
+            this.socket = null;
             return false;
         });
     }
 
-    async disconnect(): Promise<boolean> {
+    public async disconnect(): Promise<boolean> {
         if (this.socket == null) return false;
 
         this.socket?.close();
@@ -66,7 +80,7 @@ export class WebSocketClientService {
         return true;
     }
 
-    async send_scroll_command(lines: number): Promise<boolean> {
+    public async send_scroll_command(lines: number): Promise<boolean> {
         if ((this.socket == null) || (this.socket.readyState != WebSocket.OPEN)) return false;
 
         let command: number[] = [];
@@ -96,7 +110,7 @@ export class WebSocketClientService {
         return await await_response.then((): boolean => true).catch((): boolean => false);
     }
 
-    async send_print_command(dots: boolean[], enable_bold_font: boolean): Promise<boolean> {
+    public async send_print_command(dots: boolean[], enable_bold_font: boolean): Promise<boolean> {
         if ((this.socket == null) || (this.socket.readyState != WebSocket.OPEN)) return false;
 
         let command: number[] = [];
