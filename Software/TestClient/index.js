@@ -11,3 +11,7 @@ socket.addEventListener('open', (event) => {
 socket.addEventListener('message', (event) => {
     console.log('Received message: ', decoder.decode(event.data));
 })
+
+function sendMessage(data) {
+    socket.send(new Uint8Array(data));
+}
