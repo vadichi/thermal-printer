@@ -1,6 +1,14 @@
-# Arduino-Printer
+# Thermal Printer
 
-A driver for the raw interface of the Epson M-T50II thermal printer based on an Arduino Uno with wireless communication based on an ESP8266.
+> A driver for the Epson M-T50II thermal printer, easily reconfigurable for different thermal printer models, connecting to their raw GPIO interface, supporting wireless communication.
+
+
+## Architecture
+
+The printer is connected to an Arduino Uno ("Driver Chip"), which accepts commands through a simple serial-based textual protocol. Optionally, the microcontroller can also be connected to an LCD display and a keypad. The wirless communication is enabled by an ESP8266 ("WiFi Chip"), which can accept commands via a WebSocket over WiFi (in SoftAP mode or connecting to an existing network) and forward them to the Driver Chip.
+
+Several wrappers around the WebSocket connection and the communication protocol are also provided, including a collection of JavaScript helper functions, and a \*nix driver daemon.
+
 
 ## ToDo
 - [ ] Add password protection / client authentication
