@@ -1,32 +1,23 @@
-use std::os::unix::net::{UnixListener, UnixStream};
-use std::thread;
+/*
+ * Copyright 2023 Vadim Chichikalyuk
+ *
+ * This file is part of Thermal Printer
+ *
+ * Thermal Printer is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * Thermal Printer is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with Thermal Printer. If not, see <https://www.gnu.org/licenses/>.
+ */
 
 mod config;
-mod driver;
-mod protocol;
+mod logging;
 
 fn main() {
-    let socket_path = format!(
-        "{}/{}",
-        config::RUNTIME_DIRECTORY_MACOS,
-        config::SOCKET_FILE
-    );
-
-    let socket_listener = UnixListener::bind(socket_path).
-        expect("Failed to bind to socket");
-
-    for stream in socket_listener.incoming() {
-        match stream {
-            Ok(stream) => {
-                thread::spawn(move || handler_main(stream));
-            }
-            Err(_) => {
-                eprintln!("Failed to accept client");
-            }
-        }
-    }
-}
-
-fn handler_main(stream: UnixStream) {
-    println!("New client connected");
+    logging::initialise_logging();
 }
