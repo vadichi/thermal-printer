@@ -22,7 +22,7 @@ use time::UtcOffset;
 
 use crate::config;
 
-pub fn initialise_logging() {
+pub fn initialise() {
     let logging_filter = get_logging_level();
     let logging_configuration = get_logging_config();
 

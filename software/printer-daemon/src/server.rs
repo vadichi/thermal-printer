@@ -15,15 +15,6 @@
  * with Thermal Printer. If not, see <https://www.gnu.org/licenses/>.
  */
 
-mod config;
-mod logging;
-mod os_detection;
-mod server;
-
-fn main() {
-    logging::initialise();
-    let os_detector = os_detection::OSDetector::initialise();
+struct Server {
 
 }
-
-
