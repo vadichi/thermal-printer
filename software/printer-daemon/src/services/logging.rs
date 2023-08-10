@@ -27,12 +27,17 @@ pub fn initialise() {
     let logging_filter = get_logging_level();
     let logging_configuration = get_logging_config();
 
-    _ = TermLogger::init(
+     let result =  TermLogger::init(
         logging_filter,
         logging_configuration,
         TerminalMode::Stderr,
         ColorChoice::Never
-    );
+     );
+
+    if result.is_err() {
+        eprintln!("Failed to initialise logging service");
+        eprintln!("Printer daemon will continue executing but will be unable to make further logs");
+    }
 
     info!("Logging initialised");
     info!("Logging level set to {}", logging_filter);
