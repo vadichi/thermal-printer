@@ -15,21 +15,29 @@
  * with Thermal Printer. If not, see <https://www.gnu.org/licenses/>.
  */
 
-use log::{debug, error};
+use log::{debug, error, info};
+
+use crate::config;
 
 pub struct OSDetector {
     os_string: &'static str,
 }
 
 impl OSDetector {
-    pub fn initialise() -> Self {
-        let os_string = detect_os();
+    pub fn new() -> Self {
+        let os_string = OSDetector::detect_os();
+        debug!("Detected host operating system: {}", os_string);
 
-        if os_string != "macos" {
-            error!("The host operating system is not yet supported");
-            panic!("The host operating system is not yet supported");
+        if config::OS_DETECTION_SUPPORTED_SYSTEMS.contains(os_string) {
+            info!("Host operating system supported");
+        } else {
+            error!("Host operating system is not yet supported");
+
+            error!("Fatal error – shutting down");
+            panic!("Printer daemon had to shut down due to an unrecoverable error. See logs for more details.");
         }
 
+        debug!("Initialised OS detection");
         Self { os_string }
     }
 
@@ -38,18 +46,20 @@ impl OSDetector {
         let result = property_map.get(self.os_string);
 
         match result {
-            Some(property) => property.clone(),
+            Some(property) => {
+                // This is generally a reference to a reference (e.g. &(&'static str)), so this is an inexpensive operation
+                property.clone()
+            },
             None => {
                 error!("Missing OS-specific configuration entry for {}", self.os_string);
-                panic!("The host operating system is not yet fully supported");
+
+                error!("Fatal error – shutting down");
+                panic!("Printer daemon had to shut down due to an unrecoverable error. See logs for more details.");
             }
         }
     }
-}
 
-fn detect_os() -> &'static str {
-    let os_string = std::env::consts::OS;
-
-    debug!("Detected host operating system: {}", os_string);
-    os_string
+    fn detect_os() -> &'static str {
+        std::env::consts::OS
+    }
 }

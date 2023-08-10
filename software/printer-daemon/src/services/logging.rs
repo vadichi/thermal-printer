@@ -15,8 +15,9 @@
  * with Thermal Printer. If not, see <https://www.gnu.org/licenses/>.
  */
 
+use std::time::Duration;
 use chrono::Local;
-use log::{debug, LevelFilter};
+use log::{info, LevelFilter, warn};
 use simplelog::{ColorChoice, Config, ConfigBuilder, LevelPadding, TargetPadding, TerminalMode, TermLogger, ThreadLogMode};
 use time::UtcOffset;
 
@@ -33,8 +34,10 @@ pub fn initialise() {
         ColorChoice::Never
     );
 
-    debug!("Logging initialised");
-    debug!("Will log to stderr. Your OS daemon management service should store this into a log file");
+    info!("Logging initialised");
+    info!("Logging level set to {}", logging_filter);
+    info!("Logging to stderr");
+    info!("The daemon manager of your OS should redirect the log to a file");
 }
 
 fn get_logging_level() -> LevelFilter {
@@ -44,11 +47,32 @@ fn get_logging_level() -> LevelFilter {
         Ok(level) => match level.to_uppercase().as_str() {
             "ERROR" => LevelFilter::Error,
             "WARN" => LevelFilter::Warn,
+            "INFO" => LevelFilter::Info,
             "DEBUG" => LevelFilter::Debug,
 
-            _ => LevelFilter::Warn,
+            _ => {
+                // Any calls to logging functions are ignored until the logging services is fully initialised
+                async fn wait_and_log() {
+                    tokio::time::sleep(Duration::from_millis(50)).await;
+                    warn!("Unknown value of the logging level environmental variable (${})", config::LOGGING_LEVEL_ENVVAR);
+                    warn!("Defaulting to INFO");
+                }
+
+                tokio::spawn(wait_and_log());
+                LevelFilter::Info
+            },
         }
-        _ => LevelFilter::Warn,
+        Err(_) => {
+            // Any calls to logging functions are ignored until the logging services is fully initialised
+            async fn wait_and_log() {
+                tokio::time::sleep(Duration::from_millis(50)).await;
+                info!("Logging level environmental variable (${}) not set", config::LOGGING_LEVEL_ENVVAR);
+                info!("Defaulting to INFO");
+            }
+
+            tokio::spawn(wait_and_log());
+            LevelFilter::Info
+        },
     }
 }
 
@@ -56,7 +80,7 @@ fn get_logging_config() -> Config {
     ConfigBuilder::new()
         .set_max_level(LevelFilter::Error)
         .set_time_level(LevelFilter::Error)
-        .set_thread_level(LevelFilter::Debug)
+        .set_thread_level(LevelFilter::Error)
         .set_target_level(LevelFilter::Trace)
         .set_target_padding(TargetPadding::Off)
         .set_location_level(LevelFilter::Trace)

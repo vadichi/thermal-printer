@@ -15,6 +15,6 @@
  * with Thermal Printer. If not, see <https://www.gnu.org/licenses/>.
  */
 
-struct Server {
-
-}
+pub mod logging;
+pub mod os_detection;
+pub mod runtime_data;

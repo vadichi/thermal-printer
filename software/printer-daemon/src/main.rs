@@ -16,14 +16,19 @@
  */
 
 mod config;
-mod logging;
-mod os_detection;
-mod server;
+mod services;
 
-fn main() {
-    logging::initialise();
-    let os_detector = os_detection::OSDetector::initialise();
+use services::os_detection::OSDetector;
+use services::runtime_data::RuntimeDataManager;
 
+#[tokio::main]
+async fn main() {
+    services::logging::initialise();
+
+    let os_detector = OSDetector::new();
+    let data_manager = RuntimeDataManager::new(os_detector);
+
+    loop {}
 }
 
 

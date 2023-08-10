@@ -7,9 +7,10 @@ edition = "2021"
 chrono = "0.4.26"
 log = "0.4.19"
 phf = { version = "0.11.2", features = ["macros"] }
+shellexpand = "3.1.0"
 simplelog = "0.12.1"
 time = "0.3.25"
-tokio = "1.29.1"
+tokio = { version = "1.29.1", features = ["time", "macros", "rt-multi-thread"] }
 
 [dev-dependencies]
 assert_cmd = "2.0.12"

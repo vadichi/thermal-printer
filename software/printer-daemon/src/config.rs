@@ -15,19 +15,18 @@
  * with Thermal Printer. If not, see <https://www.gnu.org/licenses/>.
  */
 
-use phf::{Map, phf_map};
+use phf::{Map, phf_map, phf_set, Set};
 use time::format_description::FormatItem;
 use time::macros::format_description;
 
-type StringMap = Map<&'static str, &'static str>;
-
-pub const LOGGING_LEVEL_ENVVAR: &str =
-    "THERMAL_PRINTER_LOG_LEVEL";
+pub const LOGGING_LEVEL_ENVVAR: &str = "THERMAL_PRINTER_LOG_LEVEL";
 pub const LOGGING_TIMESTAMP_FORMAT: &[FormatItem] =
     format_description!("[year]-[month]-[day]T[hour]:[minute]:[second][offset_hour sign:mandatory]:[offset_minute]");
 
-pub const RUNTIME_DIRECTORY_LOCATION: StringMap = phf_map!(
-  "macos" => "~/Library/Caches/"  
-);
+pub const OS_DETECTION_SUPPORTED_SYSTEMS: Set<&'static str> = phf_set!("macos", "linux");
 
-pub const RUNTIME_DIRECTORY_NAME: &str = "com.vadimtch.thermal_printer.printer_daemon/";
+pub const RUNTIME_DATA_DIRECTORY_NAME: &str = "com.vadimtch.thermal_printer.printer_daemon";
+pub const RUNTIME_DATA_DIRECTORY_LOCATION: Map<&'static str, &'static str> = phf_map!(
+    "macos" => "$HOME/Library/Caches",
+    "linux" => "/run/user/$UID",
+);
